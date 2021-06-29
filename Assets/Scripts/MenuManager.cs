@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     public GameObject[] menuList;
-    public bool isGamePaused = false;
+    public bool isGamePaused;
     public bool TMP_haswin = false;
     public Slider eSlider, mSlider;
 
@@ -28,8 +28,11 @@ public class MenuManager : MonoBehaviour
         }
         GetCorrectVolume();
     }
-
-        public void Play()
+    private void Update()
+    {
+        print(isGamePaused);
+    }
+    public void Play()
     {
         AudioManager.instance.StopPlayAll();
         SceneManager.LoadScene("Game");
@@ -39,18 +42,17 @@ public class MenuManager : MonoBehaviour
     {
         if (isGamePaused)
         {
-            ApplySoundChanges();
             isGamePaused = false;
-            Time.timeScale = 1;
-            menuList[0].SetActive(true);
-        }
-        else
-        {
-            isGamePaused = true;
             Time.timeScale = 0;
             menuList[0].SetActive(false);
         }
-        
+        else
+        {
+            ApplySoundChanges();
+            isGamePaused = true;
+            Time.timeScale = 1;
+            menuList[0].SetActive(true);
+        }
 
     }
 
@@ -60,10 +62,16 @@ public class MenuManager : MonoBehaviour
         PlayerPrefs.SetFloat("mVal", mSlider.value);
     }
 
+    public void RestartLevel()
+    {
+        AudioManager.instance.StopPlayAll();
+        SceneManager.LoadScene("Game");
+    }
+
     public void GetCorrectVolume()
     {
-        PlayerPrefs.GetFloat("eVal", eSlider.value);
-        PlayerPrefs.GetFloat("mVal", mSlider.value);
+        eSlider.value = PlayerPrefs.GetFloat("eVal", 1);
+        mSlider.value = PlayerPrefs.GetFloat("mVal", 1);
     }
 
     public void EndScreen()
@@ -90,10 +98,23 @@ public class MenuManager : MonoBehaviour
     {
         for (int i = 0; i <menuList.Length; i++)
         {
-            if(menuList[i].name == "Credits")
+            if (menuList[i].name == "Credits")
             {
                 menuList[i].SetActive(true);
             }
+            else
+                menuList[i].SetActive(false);
+        }
+    }
+
+    public void OptionMenu()
+    {
+        for (int i = 0; i < menuList.Length; i++)
+        {
+            if (i == 1)
+                menuList[i].SetActive(true);
+            else
+                menuList[i].SetActive(false);
         }
     }
 }
