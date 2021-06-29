@@ -1,0 +1,35 @@
+event ratrap jam: theme tempête.
+
+goal: faire un jeu avec un début et une fin sur le theme de la tempête.
+
+Output : Web / .exe si possible
+Version Unity:  2020.3.7
+Resolution : pas de mode paysage --> 800:600 (en gros)
+Squelette du projet : Vu de coté, player au centre de la scene, la caméra peut bouger seulement vers le haut ou le bas. La caméra peut vibrer si on a le temps de le rajouter en post process.
+
+controls: Mouse only! left --> saut classique, rigth --> saut dashé, viser pour viser (duh)
+
+le player doit gravir la montagne pour arrêter la tempête.
+
+Il y a 3 main event qui vont l'en empêcher:
+
+1. Cailloux qui tombe --> instant one shot, on doit recommencer
+2. Prise glissante, si on reste trop longtemps dessus, on tombe.
+3. Coup de vent --> c'est plus difficile de sauter --> apparait à la Celest en mode petit coup de vent puis GROS coup de vent.
+
+4. SI ON A LE TEMPS : Un eclair qui nous vise, il faut swipe de prise avant l'arrivée de l'éclair
+
+2 façons de mourrir : Tomber ou se prendre un cailloux qui tombe
+
+
+génération de terrain:
+
+on crée à la main des parties de niveau qui apparaitront aléatoirement.
+on indique pour chaque partie des niveaux des event mais ils seront élatoires
+
+
+sprite list:
+
+player
+rocks
+boue
