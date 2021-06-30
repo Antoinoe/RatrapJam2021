@@ -37,6 +37,18 @@ public class Climber : MonoBehaviour
     float startHeight;
     public float highestPoint = 0;
 
+    [Header("")]
+    public State playerState;
+    public enum State
+    {
+        Grounded,
+        Jumping,
+        Holding,
+        Falling,
+        Dead
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -101,6 +113,7 @@ public class Climber : MonoBehaviour
         height = transform.position.y - startHeight;
         if (height > highestPoint) highestPoint = height;
         TileSpawn.Get.ReachNextSpawn(highestPoint);
+        EventSpawn.Get.CheckHeight(highestPoint);
 
 
         ////////////// ------------------------ Debug ------------------------
@@ -111,18 +124,14 @@ public class Climber : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Return))
             Release();
 
-        //Debug.DrawRay(transform.position, dir * 5, Color.red, Time.deltaTime);
         Debug.DrawRay(transform.position, dir * castDistance, Color.yellow, Time.deltaTime);
-
-        
     }
 
     void Jump()
     {
-        rb.velocity = dir * jumpForce;
-        //rb.AddForce(dir * jumpForce, ForceMode2D.Impulse);
-
         Release();
+
+        rb.velocity = dir * jumpForce;
 
         if (onFallOnly && dir.y > 0) canGrab = false;
     }
@@ -178,6 +187,13 @@ public class Climber : MonoBehaviour
             if (dashTimer >= dashCooldown) canDash = true;
         }
     }
+
+    public void AddVelocity(Vector2 add)
+    {
+        if(isJumping) rb.velocity += add;
+    }
+
+// ------
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
