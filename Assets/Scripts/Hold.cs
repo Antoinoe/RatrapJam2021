@@ -5,24 +5,32 @@ using UnityEngine;
 public class Hold : MonoBehaviour
 {
     public bool inUse = false;
-    LayerMask holdLayer;
+    protected LayerMask holdLayer;
+    protected Collider2D col2D;
+    protected bool started = false;
 
-    Collider2D col2D;
-
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        holdLayer = gameObject.layer;
-        col2D = GetComponent<Collider2D>();   
+        if (!started) Init();
     }
 
-    public void Holding()
+    protected virtual void Init()
     {
+        holdLayer = gameObject.layer;
+        col2D = GetComponent<Collider2D>();
+
+        started = true;
+    }
+
+    public virtual void Holding()
+    {
+        inUse = true;
         gameObject.layer = 0;
     }
 
     public void Release()
     {
+        inUse = false;
         gameObject.layer = holdLayer;
     }
 }

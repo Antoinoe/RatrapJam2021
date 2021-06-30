@@ -20,7 +20,7 @@ public class Climber : MonoBehaviour
     [SerializeField] bool canGrab = true;
     Collider2D col2D;
     public LayerMask targetLayer;
-    Hold inUseHold;
+    [SerializeField] Hold inUseHold;
     GameObject inUseGO;
 
     [Header("Dash")]
@@ -54,9 +54,6 @@ public class Climber : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0) && !isJumping)
             Jump();
-
-        if (Input.GetKeyUp(KeyCode.Space))
-            GrabHold(transform.position);
 
         if (onFallOnly)
         {
@@ -105,6 +102,13 @@ public class Climber : MonoBehaviour
 
 
         ////////////// ------------------------ Debug ------------------------
+
+        if (Input.GetKeyUp(KeyCode.Space))
+            GrabHold(transform.position);
+        
+        if (Input.GetKeyUp(KeyCode.Return))
+            Release();
+
         //Debug.DrawRay(transform.position, dir * 5, Color.red, Time.deltaTime);
         Debug.DrawRay(transform.position, dir * castDistance, Color.yellow, Time.deltaTime);
 
@@ -116,12 +120,9 @@ public class Climber : MonoBehaviour
         rb.velocity = dir * jumpForce;
         //rb.AddForce(dir * jumpForce, ForceMode2D.Impulse);
 
-        rb.gravityScale = fallSpeed;
-        isJumping = true;
+        Release();
 
         if (onFallOnly && dir.y > 0) canGrab = false;
-
-        Release();
     }
 
     void GrabHold(Vector3 position, GameObject holdingTo = null)
@@ -140,8 +141,11 @@ public class Climber : MonoBehaviour
         }
     }
 
-    void Release()
+    public void Release()
     {
+        rb.gravityScale = fallSpeed;
+        isJumping = true;
+
         if (inUseHold != null)
         {
             inUseHold.Release();
