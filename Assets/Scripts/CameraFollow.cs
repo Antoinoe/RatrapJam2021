@@ -13,6 +13,7 @@ public class CameraFollow : MonoBehaviour
     public Transform rightBound;
     float Xmin;
     Transform player;
+    Climber climber;
     Camera cam;
 
     // Following Speed
@@ -24,14 +25,13 @@ public class CameraFollow : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = FindObjectOfType<Climber>().transform;
+        climber = FindObjectOfType<Climber>();
+        player = climber.transform;
         startPos = new Vector2(0, player.position.y);
         summitPos = new Vector2(0, summitPoint.position.y);
         Xmin = leftBound.position.x;
         Xmax = rightBound.position.x;
         cam = GetComponentInChildren<Camera>();
-
-        Debug.Log("Camera " + CamHeight + "x" + CamWidth);
     }
 
     // Update is called once per frame
@@ -47,12 +47,12 @@ public class CameraFollow : MonoBehaviour
     }
 
     float CamHeight { get { return cam.orthographicSize; } }
-    float CamWidth { get { return cam.aspect* CamHeight; } }
+    float CamWidth { get { return cam.aspect * CamHeight; } }
     float CamOffset { get { return cam.transform.localPosition.y; } }
 
     void ClampCamera()
     {
-        transform.position = new Vector2(Mathf.Max(transform.position.x, Xmin + CamWidth), Mathf.Max(transform.position.y, startPos.y - CamOffset));
+        transform.position = new Vector2(Mathf.Max(transform.position.x, Xmin + CamWidth), Mathf.Max(transform.position.y, climber.highestPoint - CamHeight - CamOffset));
         transform.position = new Vector2(Mathf.Min(transform.position.x, Xmax - CamWidth), Mathf.Min(transform.position.y, summitPos.y + CamOffset));
     }
 }

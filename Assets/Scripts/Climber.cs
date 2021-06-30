@@ -35,12 +35,12 @@ public class Climber : MonoBehaviour
     //Climbing
     public float height;
     float startHeight;
+    public float highestPoint = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        rb.gravityScale = fallSpeed;
         col2D = GetComponent<Collider2D>();
 
         startHeight = transform.position.y;
@@ -80,8 +80,8 @@ public class Climber : MonoBehaviour
                     {
                         Vector2 _I = new Vector2(hit[i].transform.position.x - transform.position.x, hit[i].transform.position.y - transform.position.y);
                         Vector2 proj = Vector3.Project(_I, dir);
-                        Debug.DrawRay(transform.position, _I, Color.magenta, Time.deltaTime);
-                        Debug.DrawLine(new Vector2(transform.position.x + _I.x, transform.position.y + _I.y), new Vector2(transform.position.x + proj.x, transform.position.y + proj.y), Color.cyan, Time.deltaTime);
+                        //Debug.DrawRay(transform.position, _I, Color.magenta, Time.deltaTime);
+                        //Debug.DrawLine(new Vector2(transform.position.x + _I.x, transform.position.y + _I.y), new Vector2(transform.position.x + proj.x, transform.position.y + proj.y), Color.cyan, Time.deltaTime);
 
                         Vector2 ItoProj = new Vector2(proj.x - _I.x, proj.y - _I.y);
                         if (ItoProj.magnitude < Vector2.Distance(closest.transform.position, Vector3.Project(closest.transform.position, dir)))
@@ -91,7 +91,7 @@ public class Climber : MonoBehaviour
                     }
                 }
 
-                Debug.DrawLine(transform.position, closest.transform.position, Color.red, Time.deltaTime);
+                //Debug.DrawLine(transform.position, closest.transform.position, Color.red, Time.deltaTime;
 
                 if (Input.GetMouseButtonUp(1))
                     Dash(closest);
@@ -99,6 +99,8 @@ public class Climber : MonoBehaviour
         }
 
         height = transform.position.y - startHeight;
+        if (height > highestPoint) highestPoint = height;
+        TileSpawn.Get.ReachNextSpawn(highestPoint);
 
 
         ////////////// ------------------------ Debug ------------------------
@@ -184,5 +186,7 @@ public class Climber : MonoBehaviour
             if(canGrab)
                 GrabHold(collision.transform.position, collision.gameObject);
         }
+
+        if (collision.gameObject.CompareTag("Ground")) GrabHold(collision.ClosestPoint(transform.position));
     }
 }
