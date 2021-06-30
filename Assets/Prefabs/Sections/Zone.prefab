@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 35649951070870217}
   m_Layer: 0
-  m_Name: Start_Zone
+  m_Name: Zone
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
