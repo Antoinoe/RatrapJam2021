@@ -23,6 +23,12 @@ public class EventSpawn : MonoBehaviour
     public float windDuration;
     public GameObject windWarningPanel;
 
+    [Header("Lightning Strike")]
+    public GameObject strikeTargetPrefab;
+    public float lightningTargetDuration;
+    public float lightningFollowSpeed = 7;
+    public float strikeHitRadius = 5;
+
     // Events : Rock Slide, Wind Gust, Lightning Strike
 
     private void Awake()
@@ -88,7 +94,7 @@ public class EventSpawn : MonoBehaviour
                 break;
 
             case 2:
-                LightningStrike();
+                StartCoroutine(LightningStrike());
                 break;
 
             default:
@@ -130,8 +136,30 @@ public class EventSpawn : MonoBehaviour
         }
     }
 
-    void LightningStrike()
+    IEnumerator LightningStrike()
     {
         Debug.LogWarning("Strike me down God ! You don't have the b-");
+
+        FollowTarget targetPoint = Instantiate(strikeTargetPrefab, climber.transform.position, Quaternion.identity).GetComponent<FollowTarget>();
+        targetPoint.target = climber.transform;
+        targetPoint.speed = lightningFollowSpeed;
+        
+        float timer = 0;
+        while(timer < lightningTargetDuration)
+        {
+            timer += Time.deltaTime;
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+        targetPoint.speed = 0;
+
+        yield return new WaitForSeconds(.8f);
+
+        Debug.DrawRay(targetPoint.transform.position, (targetPoint.transform.position - climber.transform.position).normalized * strikeHitRadius, Color.white, Time.deltaTime);
+        if ((targetPoint.transform.position - climber.transform.position).magnitude <= strikeHitRadius)
+            climber.DeathHard();
+
+        Destroy(targetPoint.gameObject);
+
     }
 }

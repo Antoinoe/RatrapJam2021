@@ -6,6 +6,10 @@ public class FollowTarget : MonoBehaviour
 {
     public Transform target;
     public Vector2 offset;
+
+    public bool moveToTarget = false;
+    public bool constantFollow = false;
+    public float speed;
     
     public bool lockX;
     public bool lockY;
@@ -22,6 +26,13 @@ public class FollowTarget : MonoBehaviour
         float X = (lockX) ? transform.position.x : target.position.x + offset.x;
         float Y = (lockY) ? transform.position.y : target.position.y + offset.y;
 
-        transform.position = new Vector2(X, Y);
+        if(moveToTarget)
+        {
+            Vector2 dir = new Vector2(X - transform.position.x, Y - transform.position.y);
+            if (constantFollow) dir = dir.normalized;
+            transform.Translate(dir * speed * Time.deltaTime);
+        }
+        else
+            transform.position = new Vector2(X, Y);
     }
 }

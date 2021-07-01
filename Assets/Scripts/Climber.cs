@@ -12,13 +12,9 @@ public class Climber : MonoBehaviour
     Rigidbody2D rb;
     public float jumpForce = 10;
     public int fallSpeed = 1;
-    [SerializeField] bool isJumping = false;
 
     [Header("Holds")]
     // Hold
-    public bool onFallOnly = false;
-    [SerializeField] bool canGrab = true;
-    Collider2D col2D;
     public LayerMask targetLayer;
     [SerializeField] Hold inUseHold;
     GameObject inUseGO;
@@ -38,7 +34,9 @@ public class Climber : MonoBehaviour
     public float highestPoint = 0;
 
     [Header("")]
+    SpriteRenderer sr;
     public State playerState;
+
     public enum State
     {
         Grounded,
@@ -48,35 +46,29 @@ public class Climber : MonoBehaviour
         Dead
     }
 
+    bool CanJump { get { return playerState == State.Holding || playerState == State.Grounded; } }
+    bool CanGrab { get { return playerState == State.Jumping || playerState == State.Falling; } }
+    public bool Alive { get { return playerState != State.Dead; } }
 
-    // Start is called before the first frame update
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        col2D = GetComponent<Collider2D>();
+        sr = GetComponentInChildren<SpriteRenderer>();
 
         startHeight = transform.position.y;
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         Vector3 cursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         dir = new Vector2(cursorPos.x - transform.position.x, cursorPos.y - transform.position.y).normalized;
 
-        if (Input.GetMouseButtonUp(0) && !isJumping)
+        if (Input.GetMouseButtonUp(0) && CanJump && Alive)
             Jump();
 
-        if (onFallOnly)
-        {
-            if (!canGrab && isJumping && rb.velocity.y <= .5f)
-            {
-                canGrab = true;
-                col2D.enabled = false;
-                col2D.enabled = true;
-            }
-        }
-
+    /// Dash Cast
         RaycastHit2D[] hit = new RaycastHit2D[0];
 
         if (canDash)
@@ -105,11 +97,12 @@ public class Climber : MonoBehaviour
 
                 //Debug.DrawLine(transform.position, closest.transform.position, Color.red, Time.deltaTime;
 
-                if (Input.GetMouseButtonUp(1))
+                if (Input.GetMouseButtonUp(1) && Alive)
                     Dash(closest);
             }
         }
 
+    /// Ascension
         height = transform.position.y - startHeight;
         if (height > highestPoint) highestPoint = height;
         TileSpawn.Get.ReachNextSpawn(highestPoint);
@@ -133,7 +126,7 @@ public class Climber : MonoBehaviour
 
         rb.velocity = dir * jumpForce;
 
-        if (onFallOnly && dir.y > 0) canGrab = false;
+        playerState = State.Jumping;
     }
 
     void GrabHold(Vector3 position, GameObject holdingTo = null)
@@ -142,7 +135,7 @@ public class Climber : MonoBehaviour
         rb.gravityScale = 0;
         transform.position = position;
 
-        isJumping = false;
+        playerState = State.Holding;
 
         if (holdingTo != null)
         {
@@ -155,7 +148,7 @@ public class Climber : MonoBehaviour
     public void Release()
     {
         rb.gravityScale = fallSpeed;
-        isJumping = true;
+        playerState = State.Falling;
 
         if (inUseHold != null)
         {
@@ -190,7 +183,24 @@ public class Climber : MonoBehaviour
 
     public void AddVelocity(Vector2 add)
     {
-        if(isJumping) rb.velocity += add;
+        if(CanGrab) rb.velocity += add;
+    }
+
+    public void DeathHard()
+    {
+        GrabHold(transform.position);
+        playerState = State.Dead;
+        sr.enabled = false;
+
+        // Spawn Body particle
+        StartCoroutine(DeathTimer(2));
+    }
+
+    IEnumerator DeathTimer(float t)
+    {
+        yield return new WaitForSeconds(t);
+
+        // Show DeathScreen
     }
 
 // ------
@@ -199,7 +209,7 @@ public class Climber : MonoBehaviour
     {
         if(collision.gameObject.CompareTag("Hold"))
         {
-            if(canGrab)
+            if(CanGrab)
                 GrabHold(collision.transform.position, collision.gameObject);
         }
 
