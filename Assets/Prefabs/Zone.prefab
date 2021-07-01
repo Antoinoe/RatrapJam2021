@@ -53,7 +53,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2705477240576885327, guid: dfe99fcab432ffc43a2ec150e9623742, type: 3}
       propertyPath: m_Name
-      value: MountainTile_preset 1
+      value: Zone
+      objectReference: {fileID: 0}
+    - target: {fileID: 3196077499483221739, guid: dfe99fcab432ffc43a2ec150e9623742, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4709387503799731336, guid: dfe99fcab432ffc43a2ec150e9623742, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dfe99fcab432ffc43a2ec150e9623742, type: 3}

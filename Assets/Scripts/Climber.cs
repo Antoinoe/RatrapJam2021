@@ -24,7 +24,7 @@ public class Climber : MonoBehaviour
     [SerializeField] bool canDash = false;
     public float dashCooldown;
     float dashTimer;
-    [Range(0,1)] public float dashCooldownVisu; ///
+    [Range(0, 1)] public float dashCooldownVisu; ///
     public float castDistance;
 
     [Header("Ascension")]
@@ -35,6 +35,8 @@ public class Climber : MonoBehaviour
 
     [Header("")]
     SpriteRenderer sr;
+    Camera mainCam;
+    public float deathDistance;
     public State playerState;
 
     public enum State
@@ -53,6 +55,7 @@ public class Climber : MonoBehaviour
 
     void Start()
     {
+        mainCam = Camera.main;
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponentInChildren<SpriteRenderer>();
 
@@ -68,7 +71,7 @@ public class Climber : MonoBehaviour
         if (Input.GetMouseButtonUp(0) && CanJump && Alive)
             Jump();
 
-    /// Dash Cast
+        /// Dash Cast
         RaycastHit2D[] hit = new RaycastHit2D[0];
 
         if (canDash)
@@ -102,18 +105,20 @@ public class Climber : MonoBehaviour
             }
         }
 
-    /// Ascension
+        /// Ascension
         height = transform.position.y - startHeight;
         if (height > highestPoint) highestPoint = height;
         TileSpawn.Get.ReachNextSpawn(highestPoint);
         EventSpawn.Get.CheckHeight(highestPoint);
 
+        if (TooFar && Alive) DeathFall();
 
-        ////////////// ------------------------ Debug ------------------------
 
-        if (Input.GetKeyUp(KeyCode.Space))
-            HoldPosition(transform.position);
-        
+            ////////////// ------------------------ Debug ------------------------
+
+            if (Input.GetKeyUp(KeyCode.Space))
+                HoldPosition(transform.position);
+
         if (Input.GetKeyUp(KeyCode.Return))
             Release();
 
@@ -161,7 +166,7 @@ public class Climber : MonoBehaviour
         Debug.DrawLine(transform.position, target.transform.position, Color.white, .1f);
 
         Release();
-        HoldPosition(target.transform.position, State.Holding ,target);
+        HoldPosition(target.transform.position, State.Holding, target);
 
         canDash = false;
         StartCoroutine(DashCooldown());
@@ -183,10 +188,23 @@ public class Climber : MonoBehaviour
 
     public void AddVelocity(Vector2 add)
     {
-        if(CanGrab) rb.velocity += add;
+        if (CanGrab) rb.velocity += add;
     }
 
-    public void DeathHard()
+
+    bool TooFar { get { return (transform.position - mainCam.transform.position).magnitude >= deathDistance; } }
+
+    public void DeathFall()
+    {
+        HoldPosition(transform.position, State.Dead);
+        sr.enabled = false;
+
+        Debug.Log("Dead!");
+
+        StartCoroutine(DeathTimer(1));
+    }
+
+    public void DeathHit()
     {
         HoldPosition(transform.position, State.Dead);
         sr.enabled = false;
@@ -213,6 +231,6 @@ public class Climber : MonoBehaviour
             HoldPosition(collision.ClosestPoint(transform.position), State.Grounded);
 
         if (collision.gameObject.CompareTag("Danger") && Alive)
-            DeathHard(); // Collide with Rock
+            DeathHit(); // Collide with Rock
     }
 }

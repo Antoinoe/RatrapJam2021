@@ -31,6 +31,7 @@ public class EventSpawn : MonoBehaviour
     public float windWarningTimer;
     public float windDuration;
     public GameObject windWarningPanel;
+    public RainEffect rainEffect;
 
     [Header("Lightning Strike")]
     public GameObject strikeTargetPrefab;
@@ -50,6 +51,7 @@ public class EventSpawn : MonoBehaviour
         nextDangerLimit = dangerLevelUp.x;
         climber = FindObjectOfType<Climber>();
         mainCanvas = FindObjectOfType<Canvas>().gameObject;
+        if (rainEffect == null) rainEffect = FindObjectOfType<RainEffect>();
     }
 
     // Update is called once per frame
@@ -148,6 +150,7 @@ public class EventSpawn : MonoBehaviour
         windWarningPanel.transform.localScale = new Vector2(direction, 1);
         windWarningPanel.SetActive(true);
 
+        rainEffect.ApplyWind(direction);
         float timer = 0;
         while(timer < windWarningTimer)
         {
@@ -157,6 +160,7 @@ public class EventSpawn : MonoBehaviour
             yield return new WaitForSeconds(Time.deltaTime);
         }
 
+        rainEffect.ApplyWind(direction, 2);
         windWarningPanel.SetActive(false);
         while (timer < windWarningTimer + windDuration)
         {
@@ -165,6 +169,8 @@ public class EventSpawn : MonoBehaviour
 
             yield return new WaitForSeconds(Time.deltaTime);
         }
+
+        rainEffect.ApplyWind(direction, 0);
     }
 
     IEnumerator LightningStrike()
@@ -186,9 +192,8 @@ public class EventSpawn : MonoBehaviour
 
         Debug.DrawRay(targetPoint.transform.position, (targetPoint.transform.position - climber.transform.position).normalized * strikeHitRadius, Color.white, Time.deltaTime);
         if ((targetPoint.transform.position - climber.transform.position).magnitude <= strikeHitRadius)
-            climber.DeathHard();
+            climber.DeathHit();
 
         Destroy(targetPoint.gameObject);
-
     }
 }
