@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6135691763556410427}
   - component: {fileID: 6135691763556410424}
+  - component: {fileID: 7140959007551359219}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -82,6 +83,25 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &7140959007551359219
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6135691763556410426}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 69b705ad0cd4f704691e4d9267f61b11, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &6135691765018499575
 GameObject:
   m_ObjectHideFlags: 0
@@ -140,6 +160,9 @@ MonoBehaviour:
   castDistance: 20
   height: 0
   highestPoint: 0
+  deathParticles: {fileID: 852433327149492606, guid: fbaac0176facb164c8ed16a0056d56f9, type: 3}
+  deathCorpse: {fileID: 930156990352180816, guid: 73237690c3cc22749b3ebb0ea4f0af75, type: 3}
+  strikedColor: {r: 0.5660378, g: 0.3764685, b: 0.3764685, a: 0}
   deathDistance: 70
   playerState: 0
 --- !u!50 &6135691765018499576

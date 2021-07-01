@@ -6,6 +6,8 @@ public class CameraFollow : MonoBehaviour
 {
     // Ref Points / Position
     Vector2 startPos;
+    public Transform bottom;
+    float bottomY;
     public Transform summitPoint;
     Vector2 summitPos;
     public Transform leftBound;
@@ -27,7 +29,9 @@ public class CameraFollow : MonoBehaviour
     {
         climber = FindObjectOfType<Climber>();
         player = climber.transform;
+
         startPos = new Vector2(0, player.position.y);
+        bottomY = bottom.position.y;
         summitPos = new Vector2(0, summitPoint.position.y);
         Xmin = leftBound.position.x;
         Xmax = rightBound.position.x;
@@ -54,5 +58,6 @@ public class CameraFollow : MonoBehaviour
     {
         transform.position = new Vector2(Mathf.Max(transform.position.x, Xmin + CamWidth), Mathf.Max(transform.position.y, climber.highestPoint - CamHeight - CamOffset));
         transform.position = new Vector2(Mathf.Min(transform.position.x, Xmax - CamWidth), Mathf.Min(transform.position.y, summitPos.y + CamOffset));
+        transform.position = new Vector2(transform.position.x, Mathf.Max(transform.position.y, bottomY + CamHeight - CamOffset));
     }
 }

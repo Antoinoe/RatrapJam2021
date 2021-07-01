@@ -12,6 +12,7 @@ public class Climber : MonoBehaviour
     Rigidbody2D rb;
     public float jumpForce = 10;
     public int fallSpeed = 1;
+    [HideInInspector] private float dirAngle;
 
     [Header("Holds")]
     // Hold
@@ -33,11 +34,27 @@ public class Climber : MonoBehaviour
     float startHeight;
     public float highestPoint = 0;
 
+    [Header("Death")]
+    public GameObject deathParticles;
+    public GameObject deathCorpse;
+    public Color strikedColor;
+
     [Header("")]
     SpriteRenderer sr;
     Camera mainCam;
     public float deathDistance;
     public State playerState;
+
+    // Anim
+    Animator anim;
+    private string currentAnimState;
+    // Animation States
+    const string Player_Idle = "Idle";
+    const string Player_Jump = "Jump";
+    const string Player_SideJump = "JumpSide";
+    const string Player_Fall = "Falling";
+    const string Player_SideFall = "FallingSide";
+
 
     public enum State
     {
@@ -58,6 +75,7 @@ public class Climber : MonoBehaviour
         mainCam = Camera.main;
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponentInChildren<SpriteRenderer>();
+        anim = GetComponentInChildren<Animator>();
 
         startHeight = transform.position.y;
     }
@@ -70,6 +88,14 @@ public class Climber : MonoBehaviour
 
         if (Input.GetMouseButtonUp(0) && CanJump && Alive)
             Jump();
+
+        if(rb.velocity.y < .01f && playerState == State.Jumping && CanGrab)
+        {
+            if (Mathf.Abs(dirAngle) > 5)
+                ChangeAnimationState(Player_SideFall);
+            else
+                ChangeAnimationState(Player_Fall);
+        }
 
         /// Dash Cast
         RaycastHit2D[] hit = new RaycastHit2D[0];
@@ -127,15 +153,27 @@ public class Climber : MonoBehaviour
 
     void Jump()
     {
+        dirAngle = Vector2.SignedAngle(Vector2.up, dir);
+
         Release();
 
         rb.velocity = dir * jumpForce;
 
         playerState = State.Jumping;
+
+        if (Mathf.Abs(dirAngle) > 5)
+        {
+            ChangeAnimationState(Player_SideJump);
+            sr.flipX = Mathf.Sign(dirAngle) < 0;
+        }
+        else
+            ChangeAnimationState(Player_Jump);
     }
 
     void HoldPosition(Vector3 position, State newState = State.Holding, GameObject holdingTo = null)
     {
+        sr.flipX = false;
+
         rb.velocity = Vector2.zero;
         rb.gravityScale = 0;
         transform.position = position;
@@ -148,6 +186,8 @@ public class Climber : MonoBehaviour
             inUseGO = holdingTo;
             inUseHold.Holding();
         }
+
+        ChangeAnimationState(Player_Idle);
     }
 
     public void Release()
@@ -158,14 +198,15 @@ public class Climber : MonoBehaviour
         if (inUseHold != null)
         {
             inUseHold.Release();
+            ChangeAnimationState(Player_Fall);
         }
     }
 
     void Dash(GameObject target)
     {
-        Debug.DrawLine(transform.position, target.transform.position, Color.white, .1f);
+        Debug.DrawLine(transform.position, target.transform.position, Color.white, .1f); ///////////////////////////
 
-        Release();
+        //Release();
         HoldPosition(target.transform.position, State.Holding, target);
 
         canDash = false;
@@ -199,17 +240,19 @@ public class Climber : MonoBehaviour
         HoldPosition(transform.position, State.Dead);
         sr.enabled = false;
 
-        Debug.Log("Dead!");
-
         StartCoroutine(DeathTimer(1));
     }
 
-    public void DeathHit()
+    public void DeathHit(bool recolor = false)
     {
         HoldPosition(transform.position, State.Dead);
         sr.enabled = false;
 
         // Spawn Body particle
+        Instantiate(deathParticles, transform.position, Quaternion.identity);
+        ParticleSystem corpse = Instantiate(deathCorpse, transform.position, Quaternion.identity).GetComponent<ParticleSystem>();
+        if (recolor) corpse.startColor = strikedColor;
+
         StartCoroutine(DeathTimer(2));
     }
 
@@ -218,6 +261,15 @@ public class Climber : MonoBehaviour
         yield return new WaitForSeconds(t);
 
         // Show DeathScreen
+    }
+
+
+    void ChangeAnimationState(string newState)
+    {
+        if (currentAnimState == newState) return;
+
+        anim.Play(newState);
+        currentAnimState = newState;
     }
 
 // ------
