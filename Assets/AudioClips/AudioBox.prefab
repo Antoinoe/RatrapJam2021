@@ -1,0 +1,116 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7058659464339447872
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7058659464339447878}
+  - component: {fileID: 7058659464339447873}
+  m_Layer: 0
+  m_Name: AudioBox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7058659464339447878
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7058659464339447872}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7058659464339447873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7058659464339447872}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2782bbbab10723d4c9a68cae080070fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: Menu
+    clip: {fileID: 8300000, guid: 416911574ddb16d459cc5a54b50b300b, type: 3}
+    volume: 0.5
+    loop: 1
+    source: {fileID: 0}
+    type: 0
+  - name: Game
+    clip: {fileID: 8300000, guid: f84cb14a9eff5c2418b1fddf354644ce, type: 3}
+    volume: 0.5
+    loop: 1
+    source: {fileID: 0}
+    type: 0
+  - name: Ambiant_Grondement
+    clip: {fileID: 8300000, guid: 408121a6d115d5e4792de962f85f5811, type: 3}
+    volume: 0.5
+    loop: 1
+    source: {fileID: 0}
+    type: 1
+  - name: Big_Storm_Explosion
+    clip: {fileID: 8300000, guid: a526273cf38912145a99cc542a4739de, type: 3}
+    volume: 0.5
+    loop: 0
+    source: {fileID: 0}
+    type: 1
+  - name: Distant_Grondement
+    clip: {fileID: 8300000, guid: 2e6123d03c057f9419042035b64621a1, type: 3}
+    volume: 0.5
+    loop: 0
+    source: {fileID: 0}
+    type: 1
+  - name: Rain
+    clip: {fileID: 8300000, guid: 2d3304013cac3d64488e63ba9822ab2e, type: 3}
+    volume: 0.5
+    loop: 1
+    source: {fileID: 0}
+    type: 1
+  - name: Rock_Falling
+    clip: {fileID: 8300000, guid: 77131db17ec457d4c82340ed984be1f0, type: 3}
+    volume: 0.5
+    loop: 0
+    source: {fileID: 0}
+    type: 1
+  - name: Slime_1
+    clip: {fileID: 8300000, guid: 846f5ff7b3f413446bfa2d1010aad7b3, type: 3}
+    volume: 0.5
+    loop: 0
+    source: {fileID: 0}
+    type: 1
+  - name: Slime_Ded
+    clip: {fileID: 8300000, guid: 23f3b86626452c145a5ccb33c65b14ac, type: 3}
+    volume: 0.5
+    loop: 0
+    source: {fileID: 0}
+    type: 1
+  - name: Slime_Jump
+    clip: {fileID: 8300000, guid: 7d77d7c675943754f859568417f444f5, type: 3}
+    volume: 0.5
+    loop: 0
+    source: {fileID: 0}
+    type: 1
+  - name: Wind
+    clip: {fileID: 8300000, guid: 1d399bbbe329a634a8c499e6337b7ca3, type: 3}
+    volume: 0.5
+    loop: 0
+    source: {fileID: 0}
+    type: 1
+  musicVolume: 0.5
+  effectVolume: 0.5
+  MSlider: {fileID: 0}
+  ESlider: {fileID: 0}
