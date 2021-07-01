@@ -9,6 +9,7 @@ public class MenuManager : MonoBehaviour
     public GameObject[] menuList;
     public bool isGamePaused;
     public bool TMP_haswin = false;
+    public string title;
 
 
     public static MenuManager instance;
@@ -63,15 +64,16 @@ public class MenuManager : MonoBehaviour
 
     public void EndScreen()
     {
+        menuList[1].SetActive(true);
         if (TMP_haswin)
         {
-            menuList[1].transform.GetChild(0).GetComponent<Text>().text = "*ignore my voice crack* You suUUUk!";
+            menuList[1].transform.GetChild(0).GetComponent<Text>().text = title;
         }
         else
         {
-            menuList[1].transform.GetChild(0).GetComponent<Text>().text = "you got to the top of the mountain and beat the storm, cheh";
+            menuList[1].transform.GetChild(0).GetComponent<Text>().text = title;
         }
-        menuList[1].transform.GetChild(1).GetComponent<Text>().text = "Score : " + 0.ToString();/* + GameManager.instance.score.ToString();*/ 
+        //menuList[1].transform.GetChild(1).GetComponent<Text>().text = "Score : " + 0.ToString();/* + GameManager.instance.score.ToString();*/ 
     }
 
     public void MainMenu()

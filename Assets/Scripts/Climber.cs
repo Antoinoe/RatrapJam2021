@@ -62,7 +62,8 @@ public class Climber : MonoBehaviour
         Jumping,
         Holding,
         Falling,
-        Dead
+        Dead,
+        Finish
     }
 
     bool CanJump { get { return playerState == State.Holding || playerState == State.Grounded; } }
@@ -86,7 +87,7 @@ public class Climber : MonoBehaviour
         Vector3 cursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         dir = new Vector2(cursorPos.x - transform.position.x, cursorPos.y - transform.position.y).normalized;
 
-        if (Input.GetMouseButtonUp(0) && CanJump && Alive)
+        if (Input.GetMouseButtonUp(0) && CanJump && Alive && playerState != State.Finish)
             Jump();
 
         if(rb.velocity.y < .01f && playerState == State.Jumping && CanGrab)
@@ -126,7 +127,7 @@ public class Climber : MonoBehaviour
 
                 //Debug.DrawLine(transform.position, closest.transform.position, Color.red, Time.deltaTime;
 
-                if (Input.GetMouseButtonUp(1) && Alive)
+                if (Input.GetMouseButtonUp(1) && Alive && playerState != State.Finish)
                     Dash(closest);
             }
         }
@@ -142,13 +143,13 @@ public class Climber : MonoBehaviour
 
             ////////////// ------------------------ Debug ------------------------
 
-            if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyUp(KeyCode.Space))
                 HoldPosition(transform.position);
 
         if (Input.GetKeyUp(KeyCode.Return))
             Release();
 
-        Debug.DrawRay(transform.position, dir * castDistance, Color.yellow, Time.deltaTime);
+        //Debug.DrawRay(transform.position, dir * castDistance, Color.yellow, Time.deltaTime);
     }
 
     void Jump()
@@ -261,6 +262,8 @@ public class Climber : MonoBehaviour
         yield return new WaitForSeconds(t);
 
         // Show DeathScreen
+        MenuManager.instance.title = "Game Over";
+        MenuManager.instance.EndScreen();
     }
 
 
@@ -270,6 +273,37 @@ public class Climber : MonoBehaviour
 
         anim.Play(newState);
         currentAnimState = newState;
+    }
+
+    IEnumerator Finish()
+    {
+        Transform endPoint = GameObject.Find("EndPoint").transform;
+        Transform shelterEntry = GameObject.Find("ShelterEntry").transform;
+        HoldPosition(endPoint.position, State.Finish);
+
+        yield return new WaitForSeconds(2);
+
+        float value = 0;
+        while (value < 1)
+        {
+            transform.position = Vector2.Lerp(endPoint.position, shelterEntry.position, value);
+            transform.localScale = Vector2.Lerp(Vector2.one * 2, Vector2.one, value);
+            value += Time.deltaTime;
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+        yield return new WaitForSeconds(1);
+
+        value = 1;
+        while (value > 0)
+        {
+            sr.color = Color.white * value;
+            value -= Time.deltaTime * 2;
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+        MenuManager.instance.title = "You found Shelter for the storm !";
+        MenuManager.instance.EndScreen();
     }
 
 // ------
@@ -284,5 +318,8 @@ public class Climber : MonoBehaviour
 
         if (collision.gameObject.CompareTag("Danger") && Alive)
             DeathHit(); // Collide with Rock
+
+        if (collision.gameObject.CompareTag("Finish"))
+            StartCoroutine(Finish());
     }
 }

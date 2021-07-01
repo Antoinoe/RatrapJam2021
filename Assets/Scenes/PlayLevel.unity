@@ -753,6 +753,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pool: {fileID: 684032994}
   tileHeight: 60
+  endTile: {fileID: 5111437445720655952, guid: f84bc28972df6e9418f3746c19662cd3, type: 3}
+  summitHeight: 780
 --- !u!4 &684032996
 Transform:
   m_ObjectHideFlags: 0
@@ -1296,6 +1298,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: Pause
       objectReference: {fileID: 0}
+    - target: {fileID: 3394645140077224219, guid: 69cd1907770176443bcc08cc61532d4c, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3394645140077224293, guid: 69cd1907770176443bcc08cc61532d4c, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -1380,7 +1386,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ad677de37a7144d9e8e1955ce07fca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lifespan: 5
+  lifespan: 4
   deactivate: 1
 --- !u!1 &1739203934
 GameObject:
@@ -1436,7 +1442,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1807531776}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 800, z: 0}
+  m_LocalPosition: {x: 0, y: 950, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

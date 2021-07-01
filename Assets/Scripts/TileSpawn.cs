@@ -13,6 +13,11 @@ public class TileSpawn : MonoBehaviour
     // Spawn behaviour
     public float tileHeight = 60;  // 15 Tiles assets = ...m ?
     float lastSpawn = 0;
+    bool shouldSpawn = true;
+
+    //End
+    public GameObject endTile;
+    public float summitHeight;
 
 
     // Start is called before the first frame update
@@ -29,7 +34,15 @@ public class TileSpawn : MonoBehaviour
 
     public void ReachNextSpawn(float highestPoint)
     {
-        if (highestPoint >= lastSpawn + tileHeight)
-            Spawn();
+        if (highestPoint >= lastSpawn + tileHeight && shouldSpawn)
+        {
+            if (highestPoint >= summitHeight)
+            {
+                Instantiate(endTile, new Vector2(0, lastSpawn + 2 * tileHeight), Quaternion.identity, transform);
+                shouldSpawn = false;
+            }
+            else
+                Spawn();
+        }
     }
 }
