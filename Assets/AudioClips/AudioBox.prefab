@@ -107,7 +107,7 @@ MonoBehaviour:
   - name: Wind
     clip: {fileID: 8300000, guid: 1d399bbbe329a634a8c499e6337b7ca3, type: 3}
     volume: 0.5
-    loop: 0
+    loop: 1
     source: {fileID: 0}
     type: 1
   musicVolume: 1

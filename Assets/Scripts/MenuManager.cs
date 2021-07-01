@@ -9,7 +9,7 @@ public class MenuManager : MonoBehaviour
     public GameObject[] menuList;
     public bool isGamePaused;
     public bool TMP_haswin = false;
-    public Slider eSlider, mSlider;
+
 
     public static MenuManager instance;
 
@@ -26,7 +26,7 @@ public class MenuManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        //GetCorrectVolume();
+        AudioManager.instance.GetCorrectVolume();
         Time.timeScale = 0;
 
     }
@@ -37,7 +37,7 @@ public class MenuManager : MonoBehaviour
     public void Play()
     {
         //AudioManager.instance.StopPlayAll();
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("PlayLevel");
     }
 
     public void Pause()
@@ -50,7 +50,6 @@ public class MenuManager : MonoBehaviour
         }
         else
         {
-            ApplySoundChanges();
             isGamePaused = true;
             Time.timeScale = 1;
             menuList[0].SetActive(true);
@@ -58,23 +57,13 @@ public class MenuManager : MonoBehaviour
 
     }
 
-    public void ApplySoundChanges()
-    {
-        PlayerPrefs.SetFloat("eVal", eSlider.value);
-        PlayerPrefs.SetFloat("mVal", mSlider.value);
-    }
-
     public void RestartLevel()
     {
         //AudioManager.instance.StopPlayAll();
-        SceneManager.LoadScene("Game");
+        SceneManager.LoadScene("PlayLevel");
     }
 
-    public void GetCorrectVolume()
-    {
-        eSlider.value = PlayerPrefs.GetFloat("eVal", 1);
-        mSlider.value = PlayerPrefs.GetFloat("mVal", 1);
-    }
+
 
     public void EndScreen()
     {
@@ -91,10 +80,27 @@ public class MenuManager : MonoBehaviour
 
     public void MainMenu()
     {
-        if(SceneManager.GetActiveScene().name != "MainMenu")
-            //AudioManager.instance.StopPlayAll();
-        SceneManager.LoadScene("MainMenu");
+        if (SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            AudioManager.instance.StopPlayAll();
+            SceneManager.LoadScene("MainMenu");
+        }
+        else
+        {
+            for (int i = 0; i < menuList.Length; i++)
+            {
+                if(i == 0)
+                {
+                    menuList[i].SetActive(true);
+                }
+                else
+                {
+                    menuList[i].SetActive(false);
+                }
+            }
+        }
     }
+            
 
     public void Credits()
     {

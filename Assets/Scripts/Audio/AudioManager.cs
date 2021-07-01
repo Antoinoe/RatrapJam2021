@@ -55,7 +55,7 @@ public class AudioManager : MonoBehaviour
         else
         {
             Play("Menu");
-            print("playing sound yeaaah");
+            
         }
     }
 
@@ -69,7 +69,13 @@ public class AudioManager : MonoBehaviour
             return;
         }
         if (s.type == Sound.Type.Music)
+        {
             s.source.volume = s.volume * musicVolume;
+
+            print(s.source.volume);
+
+        }
+
         else
             s.source.volume = s.volume * effectVolume;
         s.source.Play();
@@ -100,8 +106,10 @@ public class AudioManager : MonoBehaviour
     public void ApplyChanges()
     {
         print("all volume updated");
+        print(MSlider.value + " - " + ESlider.value);
         musicVolume = MSlider.value;
         effectVolume = ESlider.value;
+        print(MSlider.value + " - " + ESlider.value);
         for (int i = 0; i < sounds.Length; i++)
         {
             if (sounds[i].type == Sound.Type.Music)
@@ -109,6 +117,14 @@ public class AudioManager : MonoBehaviour
             else
                 sounds[i].source.volume = sounds[i].volume * effectVolume;
         }
+        PlayerPrefs.SetFloat("eVal", ESlider.value);
+        PlayerPrefs.SetFloat("mVal", MSlider.value);
     }
 
+    public void GetCorrectVolume()
+    {
+        ESlider.value = PlayerPrefs.GetFloat("eVal");
+        MSlider.value = PlayerPrefs.GetFloat("mVal");
+        ApplyChanges();
+    }
 }
