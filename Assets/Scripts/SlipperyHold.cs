@@ -35,6 +35,6 @@ public class SlipperyHold : Hold
             yield return new WaitForSeconds(Time.deltaTime);
         }
 
-        if(inUse) climber.Release();
+        if(inUse && climber.Alive) climber.Release();
     }
 }
