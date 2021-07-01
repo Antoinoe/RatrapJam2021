@@ -1105,6 +1105,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 230085879}
+  lookForTag: 0
+  targetTag: 
   offset: {x: 0, y: -100}
   moveToTarget: 0
   constantFollow: 0
@@ -2300,6 +2302,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dangerLevelUp: {x: 180, y: 350, z: 550}
+  rockPrefab: {fileID: 368508724079593740, guid: dd11fb9887242ed45bd5dfd4873e68eb, type: 3}
+  rockWarningTimer: 1.75
+  rockFallSpeed: 4
+  rockSpinSpeed: {x: -20, y: 20}
+  rockWarningPanel: {fileID: 3643794513578670275, guid: 05ae2ea0194476b4da31176fdacb7771, type: 3}
   initialWindForce: 5
   windForce: 22
   windWarningTimer: 1.2
@@ -2308,6 +2315,7 @@ MonoBehaviour:
   strikeTargetPrefab: {fileID: 5928134167027261587, guid: ad5639f5d04e8734aacd0fe83c5409fe, type: 3}
   lightningTargetDuration: 2.5
   lightningFollowSpeed: 2
+  strikeHitRadius: 5
 --- !u!4 &1254086334
 Transform:
   m_ObjectHideFlags: 0
@@ -4198,6 +4206,10 @@ PrefabInstance:
     - target: {fileID: 6135691765018499575, guid: 160975a865d4c3a4d870ffcb627ff977, type: 3}
       propertyPath: m_Name
       value: Character
+      objectReference: {fileID: 0}
+    - target: {fileID: 6135691765018499578, guid: 160975a865d4c3a4d870ffcb627ff977, type: 3}
+      propertyPath: dashCooldown
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 160975a865d4c3a4d870ffcb627ff977, type: 3}

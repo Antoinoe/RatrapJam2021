@@ -112,7 +112,7 @@ public class Climber : MonoBehaviour
         ////////////// ------------------------ Debug ------------------------
 
         if (Input.GetKeyUp(KeyCode.Space))
-            GrabHold(transform.position);
+            HoldPosition(transform.position);
         
         if (Input.GetKeyUp(KeyCode.Return))
             Release();
@@ -129,13 +129,13 @@ public class Climber : MonoBehaviour
         playerState = State.Jumping;
     }
 
-    void GrabHold(Vector3 position, GameObject holdingTo = null)
+    void HoldPosition(Vector3 position, State newState = State.Holding, GameObject holdingTo = null)
     {
         rb.velocity = Vector2.zero;
         rb.gravityScale = 0;
         transform.position = position;
 
-        playerState = State.Holding;
+        playerState = newState;
 
         if (holdingTo != null)
         {
@@ -161,7 +161,7 @@ public class Climber : MonoBehaviour
         Debug.DrawLine(transform.position, target.transform.position, Color.white, .1f);
 
         Release();
-        GrabHold(target.transform.position, target);
+        HoldPosition(target.transform.position, State.Holding ,target);
 
         canDash = false;
         StartCoroutine(DashCooldown());
@@ -188,8 +188,7 @@ public class Climber : MonoBehaviour
 
     public void DeathHard()
     {
-        GrabHold(transform.position);
-        playerState = State.Dead;
+        HoldPosition(transform.position, State.Dead);
         sr.enabled = false;
 
         // Spawn Body particle
@@ -207,12 +206,13 @@ public class Climber : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.CompareTag("Hold"))
-        {
-            if(CanGrab)
-                GrabHold(collision.transform.position, collision.gameObject);
-        }
+        if(collision.gameObject.CompareTag("Hold") && CanGrab)
+            HoldPosition(collision.transform.position, State.Holding, collision.gameObject);
 
-        if (collision.gameObject.CompareTag("Ground")) GrabHold(collision.ClosestPoint(transform.position));
+        if (collision.gameObject.CompareTag("Ground"))
+            HoldPosition(collision.ClosestPoint(transform.position), State.Grounded);
+
+        if (collision.gameObject.CompareTag("Danger") && Alive)
+            DeathHard(); // Collide with Rock
     }
 }

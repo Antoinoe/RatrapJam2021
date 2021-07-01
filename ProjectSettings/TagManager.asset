@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Hold
   - Ground
+  - Danger
   layers:
   - Default
   - TransparentFX

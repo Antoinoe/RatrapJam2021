@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EventSpawn : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class EventSpawn : MonoBehaviour
     public static EventSpawn Get { get { return inst; } }
 
     Climber climber;
+    GameObject mainCanvas;
 
     [Header("CheckPoints")]
     public Vector3 dangerLevelUp;
@@ -15,6 +17,13 @@ public class EventSpawn : MonoBehaviour
     int dangerLevel = 0;
     float betweenSpawns = 120;
     float lastSpawn = 0;
+
+    [Header("Rock Slide")]
+    public GameObject rockPrefab;
+    public float rockWarningTimer;
+    public float rockFallSpeed;
+    public Vector2 rockSpinSpeed;
+    public GameObject rockWarningPanel;
 
     [Header("Wind Gust")]
     public float initialWindForce;
@@ -40,6 +49,7 @@ public class EventSpawn : MonoBehaviour
     {
         nextDangerLimit = dangerLevelUp.x;
         climber = FindObjectOfType<Climber>();
+        mainCanvas = FindObjectOfType<Canvas>().gameObject;
     }
 
     // Update is called once per frame
@@ -83,10 +93,10 @@ public class EventSpawn : MonoBehaviour
     {
         lastSpawn += betweenSpawns;
 
-        switch (Random.Range(0,3))
+        switch (Random.Range(0,1)) /////
         {
             case 0:
-                RockSlide();
+                StartCoroutine(RockSlide());
                 break;
 
             case 1:
@@ -104,14 +114,36 @@ public class EventSpawn : MonoBehaviour
 
 /// Events ------
 
-    void RockSlide()
+    IEnumerator RockSlide()
     {
-        Debug.LogWarning("It's Raining Rocks !");
+        float targetX = climber.transform.position.x;
+        RectTransform panel = Instantiate(rockWarningPanel, mainCanvas.transform).GetComponent<RectTransform>();
+        RectTransform icon = panel.GetChild(0).GetComponent<RectTransform>();
+        Vector2 panelPos = new Vector2(climber.transform.position.x, panel.position.y); // Rock World position
+        Vector2 outCanvasPos;
+
+        float timer = 0;
+        while(timer < rockWarningTimer)
+        {
+            timer += Time.deltaTime;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(panel, Camera.main.WorldToScreenPoint(panelPos), Camera.main, out outCanvasPos); // World -> to Screen -> to Canvas Rect Position !!!
+            icon.anchoredPosition = new Vector2(outCanvasPos.x, icon.anchoredPosition.y);
+
+            yield return new WaitForSeconds(Time.deltaTime);
+        }
+
+        Destroy(panel.gameObject);
+
+        GameObject rockSlide = Instantiate(rockPrefab, new Vector2(targetX, climber.transform.position.y + 40), Quaternion.identity);
+        Rigidbody2D rbR = rockSlide.GetComponent<Rigidbody2D>();
+        rbR.gravityScale = rockFallSpeed;
+        rbR.angularVelocity = Random.Range(rockSpinSpeed.x, rockSpinSpeed.y);
+        rbR.velocity += Vector2.right * Random.Range(-3.5f, 3.5f);
     }
 
     IEnumerator WindGust()
     {
-        Debug.LogWarning("fwooo...");
         float direction = (Random.Range(0, 2) - .5f) * 2; // 1 OU -1
         windWarningPanel.transform.localScale = new Vector2(direction, 1);
         windWarningPanel.SetActive(true);
@@ -126,7 +158,6 @@ public class EventSpawn : MonoBehaviour
         }
 
         windWarningPanel.SetActive(false);
-        Debug.LogWarning("WojshoOOO !!!");
         while (timer < windWarningTimer + windDuration)
         {
             timer += Time.deltaTime;
@@ -138,8 +169,6 @@ public class EventSpawn : MonoBehaviour
 
     IEnumerator LightningStrike()
     {
-        Debug.LogWarning("Strike me down God ! You don't have the b-");
-
         FollowTarget targetPoint = Instantiate(strikeTargetPrefab, climber.transform.position, Quaternion.identity).GetComponent<FollowTarget>();
         targetPoint.target = climber.transform;
         targetPoint.speed = lightningFollowSpeed;

@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class FollowTarget : MonoBehaviour
 {
+
     public Transform target;
+    public bool lookForTag;
+    public string targetTag;
+
     public Vector2 offset;
 
     public bool moveToTarget = false;
@@ -17,7 +21,7 @@ public class FollowTarget : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (lookForTag && targetTag != null) target = GameObject.FindGameObjectWithTag(targetTag).transform;
     }
 
     // Update is called once per frame
