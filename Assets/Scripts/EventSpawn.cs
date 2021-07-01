@@ -93,7 +93,7 @@ public class EventSpawn : MonoBehaviour
     {
         lastSpawn += betweenSpawns;
 
-        switch (Random.Range(0,1)) /////
+        switch (Random.Range(0,3)) /////
         {
             case 0:
                 StartCoroutine(RockSlide());
