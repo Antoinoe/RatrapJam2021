@@ -46,7 +46,7 @@ public class AudioManager : MonoBehaviour
         /*        print("volume music: " + musicVolume);
                 print("volume effet: " + effectVolume);*/
 
-        if (SceneManager.GetActiveScene().name == "Game")
+        if (SceneManager.GetActiveScene().name == "LevelPlay")
         {
             Play("Game");
             print("playing sound yeaaah");

@@ -27,12 +27,8 @@ public class MenuManager : MonoBehaviour
             return;
         }
         AudioManager.instance.GetCorrectVolume();
-        Time.timeScale = 0;
+        //Time.timeScale = 0;
 
-    }
-    private void Update()
-    {
-        print(isGamePaused);
     }
     public void Play()
     {
