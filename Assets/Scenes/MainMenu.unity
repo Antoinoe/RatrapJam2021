@@ -1845,6 +1845,10 @@ PrefabInstance:
       propertyPath: effectVolume
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 7058659464339447873, guid: 4cda4254995635e4b9f432ca95578898, type: 3}
+      propertyPath: sounds.Array.data[1].volume
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7058659464339447878, guid: 4cda4254995635e4b9f432ca95578898, type: 3}
       propertyPath: m_RootOrder
       value: 5

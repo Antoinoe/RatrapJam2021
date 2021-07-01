@@ -43,9 +43,20 @@ public class AudioManager : MonoBehaviour
     private void Start()
     {
         ApplyChanges();
-/*        print("volume music: " + musicVolume);
-        print("volume effet: " + effectVolume);*/
+        /*        print("volume music: " + musicVolume);
+                print("volume effet: " + effectVolume);*/
 
+        if (SceneManager.GetActiveScene().name == "Game")
+        {
+            Play("Game");
+            print("playing sound yeaaah");
+        }
+
+        else
+        {
+            Play("Menu");
+            print("playing sound yeaaah");
+        }
     }
 
     public void Play(string name)
@@ -99,4 +110,5 @@ public class AudioManager : MonoBehaviour
                 sounds[i].source.volume = sounds[i].volume * effectVolume;
         }
     }
+
 }

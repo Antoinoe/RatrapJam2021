@@ -26,7 +26,9 @@ public class MenuManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        GetCorrectVolume();
+        //GetCorrectVolume();
+        Time.timeScale = 0;
+
     }
     private void Update()
     {
@@ -34,7 +36,7 @@ public class MenuManager : MonoBehaviour
     }
     public void Play()
     {
-        AudioManager.instance.StopPlayAll();
+        //AudioManager.instance.StopPlayAll();
         SceneManager.LoadScene("Game");
     }
 
@@ -64,7 +66,7 @@ public class MenuManager : MonoBehaviour
 
     public void RestartLevel()
     {
-        AudioManager.instance.StopPlayAll();
+        //AudioManager.instance.StopPlayAll();
         SceneManager.LoadScene("Game");
     }
 
@@ -90,7 +92,7 @@ public class MenuManager : MonoBehaviour
     public void MainMenu()
     {
         if(SceneManager.GetActiveScene().name != "MainMenu")
-            AudioManager.instance.StopPlayAll();
+            //AudioManager.instance.StopPlayAll();
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -116,5 +118,11 @@ public class MenuManager : MonoBehaviour
             else
                 menuList[i].SetActive(false);
         }
+    }
+
+    public void ClosePopUp()
+    {
+        Time.timeScale = 1;
+        menuList[2].SetActive(false);
     }
 }

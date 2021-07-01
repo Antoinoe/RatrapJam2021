@@ -52,7 +52,7 @@ MonoBehaviour:
     type: 0
   - name: Game
     clip: {fileID: 8300000, guid: f84cb14a9eff5c2418b1fddf354644ce, type: 3}
-    volume: 0.5
+    volume: 1
     loop: 1
     source: {fileID: 0}
     type: 0
@@ -110,7 +110,7 @@ MonoBehaviour:
     loop: 0
     source: {fileID: 0}
     type: 1
-  musicVolume: 0.5
-  effectVolume: 0.5
+  musicVolume: 1
+  effectVolume: 1
   MSlider: {fileID: 0}
   ESlider: {fileID: 0}
