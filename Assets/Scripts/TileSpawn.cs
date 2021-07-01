@@ -23,7 +23,7 @@ public class TileSpawn : MonoBehaviour
 
     public void Spawn()
     {
-        Instantiate(pool.GetTile(), new Vector2(0, lastSpawn + 2 * tileHeight), Quaternion.identity);
+        Instantiate(pool.GetTile(), new Vector2(0, lastSpawn + 2 * tileHeight), Quaternion.identity, transform);
         lastSpawn += tileHeight;
     }
 

@@ -12,13 +12,9 @@ public class Climber : MonoBehaviour
     Rigidbody2D rb;
     public float jumpForce = 10;
     public int fallSpeed = 1;
-    [SerializeField] bool isJumping = false;
 
     [Header("Holds")]
     // Hold
-    public bool onFallOnly = false;
-    [SerializeField] bool canGrab = true;
-    Collider2D col2D;
     public LayerMask targetLayer;
     [SerializeField] Hold inUseHold;
     GameObject inUseGO;
@@ -37,34 +33,42 @@ public class Climber : MonoBehaviour
     float startHeight;
     public float highestPoint = 0;
 
-    // Start is called before the first frame update
+    [Header("")]
+    SpriteRenderer sr;
+    public State playerState;
+
+    public enum State
+    {
+        Grounded,
+        Jumping,
+        Holding,
+        Falling,
+        Dead
+    }
+
+    bool CanJump { get { return playerState == State.Holding || playerState == State.Grounded; } }
+    bool CanGrab { get { return playerState == State.Jumping || playerState == State.Falling; } }
+    public bool Alive { get { return playerState != State.Dead; } }
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        col2D = GetComponent<Collider2D>();
+        sr = GetComponentInChildren<SpriteRenderer>();
 
         startHeight = transform.position.y;
     }
 
-    // Update is called once per frame
+
     void Update()
     {
         Vector3 cursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         dir = new Vector2(cursorPos.x - transform.position.x, cursorPos.y - transform.position.y).normalized;
 
-        if (Input.GetMouseButtonUp(0) && !isJumping)
+        if (Input.GetMouseButtonUp(0) && CanJump && Alive)
             Jump();
 
-        if (onFallOnly)
-        {
-            if (!canGrab && isJumping && rb.velocity.y <= .5f)
-            {
-                canGrab = true;
-                col2D.enabled = false;
-                col2D.enabled = true;
-            }
-        }
-
+    /// Dash Cast
         RaycastHit2D[] hit = new RaycastHit2D[0];
 
         if (canDash)
@@ -93,47 +97,45 @@ public class Climber : MonoBehaviour
 
                 //Debug.DrawLine(transform.position, closest.transform.position, Color.red, Time.deltaTime;
 
-                if (Input.GetMouseButtonUp(1))
+                if (Input.GetMouseButtonUp(1) && Alive)
                     Dash(closest);
             }
         }
 
+    /// Ascension
         height = transform.position.y - startHeight;
         if (height > highestPoint) highestPoint = height;
         TileSpawn.Get.ReachNextSpawn(highestPoint);
+        EventSpawn.Get.CheckHeight(highestPoint);
 
 
         ////////////// ------------------------ Debug ------------------------
 
         if (Input.GetKeyUp(KeyCode.Space))
-            GrabHold(transform.position);
+            HoldPosition(transform.position);
         
         if (Input.GetKeyUp(KeyCode.Return))
             Release();
 
-        //Debug.DrawRay(transform.position, dir * 5, Color.red, Time.deltaTime);
         Debug.DrawRay(transform.position, dir * castDistance, Color.yellow, Time.deltaTime);
-
-        
     }
 
     void Jump()
     {
-        rb.velocity = dir * jumpForce;
-        //rb.AddForce(dir * jumpForce, ForceMode2D.Impulse);
-
         Release();
 
-        if (onFallOnly && dir.y > 0) canGrab = false;
+        rb.velocity = dir * jumpForce;
+
+        playerState = State.Jumping;
     }
 
-    void GrabHold(Vector3 position, GameObject holdingTo = null)
+    void HoldPosition(Vector3 position, State newState = State.Holding, GameObject holdingTo = null)
     {
         rb.velocity = Vector2.zero;
         rb.gravityScale = 0;
         transform.position = position;
 
-        isJumping = false;
+        playerState = newState;
 
         if (holdingTo != null)
         {
@@ -146,7 +148,7 @@ public class Climber : MonoBehaviour
     public void Release()
     {
         rb.gravityScale = fallSpeed;
-        isJumping = true;
+        playerState = State.Falling;
 
         if (inUseHold != null)
         {
@@ -159,7 +161,7 @@ public class Climber : MonoBehaviour
         Debug.DrawLine(transform.position, target.transform.position, Color.white, .1f);
 
         Release();
-        GrabHold(target.transform.position, target);
+        HoldPosition(target.transform.position, State.Holding ,target);
 
         canDash = false;
         StartCoroutine(DashCooldown());
@@ -179,14 +181,38 @@ public class Climber : MonoBehaviour
         }
     }
 
+    public void AddVelocity(Vector2 add)
+    {
+        if(CanGrab) rb.velocity += add;
+    }
+
+    public void DeathHard()
+    {
+        HoldPosition(transform.position, State.Dead);
+        sr.enabled = false;
+
+        // Spawn Body particle
+        StartCoroutine(DeathTimer(2));
+    }
+
+    IEnumerator DeathTimer(float t)
+    {
+        yield return new WaitForSeconds(t);
+
+        // Show DeathScreen
+    }
+
+// ------
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.CompareTag("Hold"))
-        {
-            if(canGrab)
-                GrabHold(collision.transform.position, collision.gameObject);
-        }
+        if(collision.gameObject.CompareTag("Hold") && CanGrab)
+            HoldPosition(collision.transform.position, State.Holding, collision.gameObject);
 
-        if (collision.gameObject.CompareTag("Ground")) GrabHold(collision.ClosestPoint(transform.position));
+        if (collision.gameObject.CompareTag("Ground"))
+            HoldPosition(collision.ClosestPoint(transform.position), State.Grounded);
+
+        if (collision.gameObject.CompareTag("Danger") && Alive)
+            DeathHard(); // Collide with Rock
     }
 }
